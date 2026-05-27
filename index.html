@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>AI Seamless Audio Loop</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#000;
+    color:white;
+    font-family:sans-serif;
+    overflow:hidden;
+}
+
+#bgvideo{
+    position:fixed;
+    right:0;
+    bottom:0;
+    min-width:100%;
+    min-height:100%;
+    object-fit:cover;
+    z-index:-1;
+    opacity:0.35;
+}
+
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    max-width:430px;
+    background:rgba(0,0,0,0.55);
+    padding:25px;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    text-align:center;
+}
+
+h1{
+    margin-bottom:20px;
+}
+
+input,select,button{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+}
+
+input,select{
+    background:#222;
+    color:white;
+}
+
+button{
+    background:#5b5bff;
+    color:white;
+    font-weight:bold;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+#timer{
+    font-size:38px;
+    margin-top:20px;
+    font-weight:bold;
+}
+
+#status{
+    margin-top:10px;
+    opacity:0.8;
+}
+
+.volume-box{
+    margin-top:20px;
+}
+
+.info{
+    margin-top:15px;
+    font-size:13px;
+    opacity:0.7;
+}
+
+</style>
+</head>
+
+<body>
+
+<video autoplay muted loop id="bgvideo">
+<source src="bg.mp4" type="video/mp4">
+</video>
+
+<div class="container">
+
+<h1>AI Seamless Loop</h1>
+
+<input type="file"
+id="audioFile"
+accept="audio/*">
+
+<select id="duration">
+<option value="5">5 Menit</option>
+<option value="10">10 Menit</option>
+<option value="30">30 Menit</option>
+<option value="60">1 Jam</option>
+<option value="120">2 Jam</option>
+<option value="180">3 Jam</option>
+<option value="240">4 Jam</option>
+<option value="300">5 Jam</option>
+<option value="360">6 Jam</option>
+</select>
+
+<button onclick="startAudio()">
+START LOOP
+</button>
+
+<button onclick="stopAudio()">
+STOP
+</button>
+
+<button onclick="downloadLoop()">
+DOWNLOAD AUDIO
+</button>
+
+<div class="volume-box">
+
+<input type="range"
+min="0"
+max="1"
+step="0.01"
+value="1"
+oninput="changeVolume(this.value)">
+
+</div>
+
+<div id="timer">
+00:00:00
+</div>
+
+<div id="status">
+Belum diputar
+</div>
+
+<div class="info">
+AI Loop Detection • Audio Enhance • WAV Export
+</div>
+
+</div>
+
+<script>
+
+let audioContext =
+new AudioContext();
+
+let source;
+
+let gainNode;
+
+let biquadFilter;
+
+let compressor;
+
+let audioBuffer;
+
+let countdown;
+
+let loopPoints;
+
+async function startAudio(){
+
+    const file =
+    document.getElementById('audioFile').files[0];
+
+    if(!file){
+
+        alert("Pilih audio dulu");
+
+        return;
+    }
+
+    const arrayBuffer =
+    await file.arrayBuffer();
+
+    audioBuffer =
+    await audioContext.decodeAudioData(arrayBuffer);
+
+    normalizeAudio(audioBuffer);
+
+    loopPoints =
+    await findBestLoopPoints(audioBuffer);
+
+    await playSeamlessLoop();
+
+    startTimer();
+
+    document.getElementById('status').innerText =
+    "AI Seamless Loop Aktif";
+}
+
+async function playSeamlessLoop(){
+
+    if(source){
+
+        source.stop();
+    }
+
+    source =
+    audioContext.createBufferSource();
+
+    gainNode =
+    audioContext.createGain();
+
+    biquadFilter =
+    audioContext.createBiquadFilter();
+
+    compressor =
+    audioContext.createDynamicsCompressor();
+
+    source.buffer =
+    audioBuffer;
+
+    biquadFilter.type =
+    "highshelf";
+
+    biquadFilter.frequency.value =
+    3000;
+
+    biquadFilter.gain.value =
+    4;
+
+    compressor.threshold.value =
+    -18;
+
+    compressor.knee.value =
+    20;
+
+    compressor.ratio.value =
+    4;
+
+    compressor.attack.value =
+    0.003;
+
+    compressor.release.value =
+    0.25;
+
+    source.connect(biquadFilter);
+
+    biquadFilter.connect(compressor);
+
+    compressor.connect(gainNode);
+
+    gainNode.connect(
+    audioContext.destination
+    );
+
+    gainNode.gain.setValueAtTime(
+    0,
+    audioContext.currentTime
+    );
+
+    gainNode.gain.linearRampToValueAtTime(
+    1,
+    audioContext.currentTime + 2
+    );
+
+    source.loop = true;
+
+    source.loopStart =
+    loopPoints.start;
+
+    source.loopEnd =
+    loopPoints.end;
+
+    source.start(0);
+}
+
+async function findBestLoopPoints(buffer){
+
+    const data =
+    buffer.getChannelData(0);
+
+    const sampleRate =
+    buffer.sampleRate;
+
+    let bestStart = 0;
+
+    let bestEnd =
+    data.length - 1;
+
+    let smallestDiff =
+    Infinity;
+
+    const windowSize =
+    12000;
+
+    for(let start = sampleRate * 5;
+        start < sampleRate * 30;
+        start += 2000){
+
+        for(let end =
+            data.length - (sampleRate * 30);
+
+            end <
+            data.length - (sampleRate * 5);
+
+            end += 2000){
+
+            let diff = 0;
+
+            for(let i = 0;
+                i < windowSize;
+                i++){
+
+                diff += Math.abs(
+                data[start + i]
+                -
+                data[end + i]
+                );
+            }
+
+            if(diff < smallestDiff){
+
+                smallestDiff = diff;
+
+                bestStart = start;
+
+                bestEnd = end;
+            }
+        }
+    }
+
+    return {
+
+        start:
+        bestStart / sampleRate,
+
+        end:
+        bestEnd / sampleRate
+    };
+}
+
+function normalizeAudio(buffer){
+
+    const data =
+    buffer.getChannelData(0);
+
+    let max = 0;
+
+    for(let i = 0;
+        i < data.length;
+        i++){
+
+        if(Math.abs(data[i]) > max){
+
+            max =
+            Math.abs(data[i]);
+        }
+    }
+
+    const normalizeValue =
+    0.95 / max;
+
+    for(let i = 0;
+        i < data.length;
+        i++){
+
+        data[i] *=
+        normalizeValue;
+    }
+}
+
+function startTimer(){
+
+    clearInterval(countdown);
+
+    const minutes =
+    parseInt(
+    document.getElementById('duration').value
+    );
+
+    let totalSeconds =
+    minutes * 60;
+
+    updateTimer(totalSeconds);
+
+    countdown =
+    setInterval(() => {
+
+        totalSeconds--;
+
+        updateTimer(totalSeconds);
+
+        if(totalSeconds <= 0){
+
+            stopAudio();
+
+            document.getElementById('status').innerText =
+            "Timer selesai";
+        }
+
+    },1000);
+}
+
+function updateTimer(seconds){
+
+    let hrs =
+    Math.floor(seconds / 3600);
+
+    let mins =
+    Math.floor((seconds % 3600) / 60);
+
+    let secs =
+    seconds % 60;
+
+    document.getElementById('timer').innerText =
+
+    String(hrs).padStart(2,'0')
+    + ":"
+    + String(mins).padStart(2,'0')
+    + ":"
+    + String(secs).padStart(2,'0');
+}
+
+function stopAudio(){
+
+    if(source){
+
+        source.stop();
+    }
+
+    clearInterval(countdown);
+
+    document.getElementById('status').innerText =
+    "Audio dihentikan";
+}
+
+function changeVolume(value){
+
+    if(gainNode){
+
+        gainNode.gain.value =
+        value;
+    }
+}
+
+async function downloadLoop(){
+
+    if(!audioBuffer){
+
+        alert("Putar audio dulu");
+
+        return;
+    }
+
+    document.getElementById('status').innerText =
+    "Rendering audio...";
+
+    const durationMinutes =
+    parseInt(
+    document.getElementById('duration').value
+    );
+
+    const durationSeconds =
+    durationMinutes * 60;
+
+    const offlineContext =
+    new OfflineAudioContext(
+        1,
+        audioBuffer.sampleRate *
+        durationSeconds,
+        audioBuffer.sampleRate
+    );
+
+    const offlineSource =
+    offlineContext.createBufferSource();
+
+    const offlineGain =
+    offlineContext.createGain();
+
+    offlineSource.buffer =
+    audioBuffer;
+
+    offlineSource.loop =
+    true;
+
+    offlineSource.loopStart =
+    loopPoints.start;
+
+    offlineSource.loopEnd =
+    loopPoints.end;
+
+    offlineSource.connect(offlineGain);
+
+    offlineGain.connect(
+    offlineContext.destination
+    );
+
+    offlineGain.gain.setValueAtTime(
+    0,
+    0
+    );
+
+    offlineGain.gain.linearRampToValueAtTime(
+    1,
+    2
+    );
+
+    offlineSource.start(0);
+
+    const renderedBuffer =
+    await offlineContext.startRendering();
+
+    exportWAV(renderedBuffer);
+
+    document.getElementById('status').innerText =
+    "Download selesai";
+}
+
+function exportWAV(buffer){
+
+    const channelData =
+    buffer.getChannelData(0);
+
+    const wavBuffer =
+    new ArrayBuffer(
+    44 + channelData.length * 2
+    );
+
+    const view =
+    new DataView(wavBuffer);
+
+    function writeString(
+    view,
+    offset,
+    string
+    ){
+
+        for(let i = 0;
+            i < string.length;
+            i++){
+
+            view.setUint8(
+            offset + i,
+            string.charCodeAt(i)
+            );
+        }
+    }
+
+    writeString(view,0,'RIFF');
+
+    view.setUint32(
+    4,
+    36 + channelData.length * 2,
+    true
+    );
+
+    writeString(view,8,'WAVE');
+
+    writeString(view,12,'fmt ');
+
+    view.setUint32(16,16,true);
+
+    view.setUint16(20,1,true);
+
+    view.setUint16(22,1,true);
+
+    view.setUint32(24,44100,true);
+
+    view.setUint32(28,44100 * 2,true);
+
+    view.setUint16(32,2,true);
+
+    view.setUint16(34,16,true);
+
+    writeString(view,36,'data');
+
+    view.setUint32(
+    40,
+    channelData.length * 2,
+    true
+    );
+
+    let offset = 44;
+
+    for(let i = 0;
+        i < channelData.length;
+        i++){
+
+        let sample =
+        Math.max(
+        -1,
+        Math.min(1, channelData[i])
+        );
+
+        view.setInt16(
+        offset,
+        sample < 0
+        ? sample * 0x8000
+        : sample * 0x7FFF,
+        true
+        );
+
+        offset += 2;
+    }
+
+    const blob =
+    new Blob(
+    [view],
+    {type:'audio/wav'}
+    );
+
+    const url =
+    URL.createObjectURL(blob);
+
+    const a =
+    document.createElement('a');
+
+    a.href = url;
+
+    a.download =
+    'ai-seamless-loop.wav';
+
+    a.click();
+}
+
+</script>
+
+</body>
+</html>
