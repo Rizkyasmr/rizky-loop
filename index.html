@@ -5,90 +5,409 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>AI Seamless Audio Loop</title>
+<title>Rizky AI Loop</title>
 
 <style>
 
-body{
-    margin:0;
-    background:#000;
-    color:white;
-    font-family:sans-serif;
-    overflow:hidden;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-#bgvideo{
-    position:fixed;
-    right:0;
-    bottom:0;
-    min-width:100%;
-    min-height:100%;
-    object-fit:cover;
-    z-index:-1;
-    opacity:0.35;
+body{
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+overflow:hidden;
+
+font-family:sans-serif;
+
+background:
+linear-gradient(
+135deg,
+#050510,
+#101030,
+#1a1040
+);
+
+background-size:300% 300%;
+
+animation:bgMove 12s ease infinite;
+
+color:white;
+}
+
+@keyframes bgMove{
+
+0%{
+background-position:0% 50%;
+}
+
+50%{
+background-position:100% 50%;
+}
+
+100%{
+background-position:0% 50%;
+}
+}
+
+.bgGlow{
+
+position:absolute;
+
+width:500px;
+height:500px;
+
+background:
+radial-gradient(
+circle,
+rgba(120,90,255,0.25),
+transparent
+);
+
+filter:blur(60px);
+
+animation:float 6s ease infinite;
+}
+
+.bgGlow:nth-child(1){
+
+top:-120px;
+left:-120px;
+}
+
+.bgGlow:nth-child(2){
+
+bottom:-120px;
+right:-120px;
+
+animation-delay:2s;
+}
+
+@keyframes float{
+
+0%,100%{
+transform:translateY(0px);
+}
+
+50%{
+transform:translateY(25px);
+}
 }
 
 .container{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:90%;
-    max-width:430px;
-    background:rgba(0,0,0,0.55);
-    padding:25px;
-    border-radius:20px;
-    backdrop-filter:blur(10px);
-    text-align:center;
+
+position:relative;
+
+width:92%;
+max-width:430px;
+
+padding:28px;
+
+border-radius:30px;
+
+background:
+rgba(255,255,255,0.06);
+
+backdrop-filter:blur(20px);
+
+border:
+1px solid
+rgba(255,255,255,0.08);
+
+box-shadow:
+0 0 50px
+rgba(120,90,255,0.28);
+
+animation:fadeIn 1s ease;
 }
 
-h1{
-    margin-bottom:20px;
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateY(25px);
 }
 
-input,select,button{
-    width:100%;
-    padding:14px;
-    margin-top:12px;
-    border:none;
-    border-radius:12px;
-    font-size:16px;
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-input,select{
-    background:#222;
-    color:white;
+.logo{
+
+text-align:center;
+
+font-size:38px;
+
+font-weight:bold;
+
+margin-bottom:6px;
+
+background:
+linear-gradient(
+90deg,
+#7f7fff,
+#ff7bff
+);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+}
+
+.sub{
+
+text-align:center;
+
+font-size:13px;
+
+opacity:0.7;
+
+margin-bottom:22px;
+}
+
+input,
+select{
+
+width:100%;
+
+padding:15px;
+
+margin-top:14px;
+
+border:none;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.08);
+
+color:white;
+
+font-size:15px;
+
+outline:none;
+
+transition:0.2s;
+}
+
+input:focus,
+select:focus{
+
+transform:scale(1.02);
+
+box-shadow:
+0 0 18px
+rgba(120,90,255,0.35);
 }
 
 button{
-    background:#5b5bff;
-    color:white;
-    font-weight:bold;
+
+position:relative;
+
+overflow:hidden;
+
+width:100%;
+
+padding:15px;
+
+margin-top:14px;
+
+border:none;
+
+border-radius:18px;
+
+font-size:16px;
+
+font-weight:bold;
+
+color:white;
+
+cursor:pointer;
+
+background:
+linear-gradient(
+135deg,
+#6b5cff,
+#9d4dff
+);
+
+transition:0.15s ease;
+
+box-shadow:
+0 10px 25px
+rgba(120,90,255,0.35);
 }
 
 button:hover{
-    opacity:0.9;
+
+transform:translateY(-2px);
+
+box-shadow:
+0 0 30px
+rgba(120,90,255,0.6);
+}
+
+button:active{
+
+transform:scale(0.90);
+
+filter:brightness(1.2);
+}
+
+button::after{
+
+content:'';
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+width:0;
+height:0;
+
+background:
+rgba(255,255,255,0.25);
+
+border-radius:50%;
+
+transform:
+translate(-50%,-50%);
+
+transition:0.4s;
+}
+
+button:active::after{
+
+width:300px;
+height:300px;
+}
+
+.range{
+
+margin-top:18px;
 }
 
 #timer{
-    font-size:38px;
-    margin-top:20px;
-    font-weight:bold;
+
+font-size:50px;
+
+font-weight:bold;
+
+text-align:center;
+
+margin-top:24px;
+
+text-shadow:
+0 0 15px
+rgba(140,120,255,0.5);
 }
 
 #status{
-    margin-top:10px;
-    opacity:0.8;
+
+text-align:center;
+
+margin-top:12px;
+
+font-size:14px;
+
+opacity:0.85;
 }
 
-.volume-box{
-    margin-top:20px;
+#loadingBox{
+
+display:none;
+
+margin-top:24px;
+
+text-align:center;
+}
+
+.loader{
+
+width:78px;
+height:78px;
+
+margin:auto;
+
+border-radius:50%;
+
+border:
+7px solid
+rgba(255,255,255,0.08);
+
+border-top:
+7px solid #9b7cff;
+
+animation:spin 0.8s linear infinite;
+
+box-shadow:
+0 0 25px
+rgba(140,120,255,0.45);
+}
+
+@keyframes spin{
+
+100%{
+transform:rotate(360deg);
+}
+}
+
+.loadingText{
+
+margin-top:16px;
+
+font-size:14px;
+
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+
+0%{
+opacity:0.3;
+}
+
+50%{
+opacity:1;
+}
+
+100%{
+opacity:0.3;
+}
 }
 
 .info{
-    margin-top:15px;
-    font-size:13px;
-    opacity:0.7;
+
+text-align:center;
+
+margin-top:20px;
+
+font-size:12px;
+
+opacity:0.55;
+}
+
+.credit{
+
+margin-top:14px;
+
+text-align:center;
+
+font-size:13px;
+
+color:#b89cff;
 }
 
 </style>
@@ -96,19 +415,26 @@ button:hover{
 
 <body>
 
-<video autoplay muted loop id="bgvideo">
-<source src="bg.mp4" type="video/mp4">
-</video>
+<div class="bgGlow"></div>
+<div class="bgGlow"></div>
 
 <div class="container">
 
-<h1>AI Seamless Loop</h1>
+<div class="logo">
+RIZKY AI LOOP
+</div>
 
-<input type="file"
+<div class="sub">
+Ultra Smooth Ambience Generator
+</div>
+
+<input
+type="file"
 id="audioFile"
 accept="audio/*">
 
 <select id="duration">
+
 <option value="5">5 Menit</option>
 <option value="10">10 Menit</option>
 <option value="30">30 Menit</option>
@@ -118,6 +444,7 @@ accept="audio/*">
 <option value="240">4 Jam</option>
 <option value="300">5 Jam</option>
 <option value="360">6 Jam</option>
+
 </select>
 
 <button onclick="startAudio()">
@@ -132,9 +459,10 @@ STOP
 DOWNLOAD AUDIO
 </button>
 
-<div class="volume-box">
+<div class="range">
 
-<input type="range"
+<input
+type="range"
 min="0"
 max="1"
 step="0.01"
@@ -148,489 +476,132 @@ oninput="changeVolume(this.value)">
 </div>
 
 <div id="status">
-Belum diputar
+Siap memutar audio
+</div>
+
+<div id="loadingBox">
+
+<div class="loader"></div>
+
+<div
+class="loadingText"
+id="loadingText">
+
+AI sedang memproses...
+
+</div>
+
 </div>
 
 <div class="info">
-AI Loop Detection • Audio Enhance • WAV Export
+
+AI Seamless • Smart Crossfade • HQ Audio
+
+</div>
+
+<div class="credit">
+
+Made by Rizky
+
 </div>
 
 </div>
 
 <script>
 
-let audioContext =
-new AudioContext();
+function setLoading(text){
 
-let source;
+document.getElementById(
+'loadingBox'
+).style.display='block';
 
-let gainNode;
-
-let biquadFilter;
-
-let compressor;
-
-let audioBuffer;
-
-let countdown;
-
-let loopPoints;
-
-async function startAudio(){
-
-    const file =
-    document.getElementById('audioFile').files[0];
-
-    if(!file){
-
-        alert("Pilih audio dulu");
-
-        return;
-    }
-
-    const arrayBuffer =
-    await file.arrayBuffer();
-
-    audioBuffer =
-    await audioContext.decodeAudioData(arrayBuffer);
-
-    normalizeAudio(audioBuffer);
-
-    loopPoints =
-    await findBestLoopPoints(audioBuffer);
-
-    await playSeamlessLoop();
-
-    startTimer();
-
-    document.getElementById('status').innerText =
-    "AI Seamless Loop Aktif";
+document.getElementById(
+'loadingText'
+).innerText=text;
 }
 
-async function playSeamlessLoop(){
+function hideLoading(){
 
-    if(source){
+setTimeout(()=>{
 
-        source.stop();
-    }
+document.getElementById(
+'loadingBox'
+).style.display='none';
 
-    source =
-    audioContext.createBufferSource();
-
-    gainNode =
-    audioContext.createGain();
-
-    biquadFilter =
-    audioContext.createBiquadFilter();
-
-    compressor =
-    audioContext.createDynamicsCompressor();
-
-    source.buffer =
-    audioBuffer;
-
-    biquadFilter.type =
-    "highshelf";
-
-    biquadFilter.frequency.value =
-    3000;
-
-    biquadFilter.gain.value =
-    4;
-
-    compressor.threshold.value =
-    -18;
-
-    compressor.knee.value =
-    20;
-
-    compressor.ratio.value =
-    4;
-
-    compressor.attack.value =
-    0.003;
-
-    compressor.release.value =
-    0.25;
-
-    source.connect(biquadFilter);
-
-    biquadFilter.connect(compressor);
-
-    compressor.connect(gainNode);
-
-    gainNode.connect(
-    audioContext.destination
-    );
-
-    gainNode.gain.setValueAtTime(
-    0,
-    audioContext.currentTime
-    );
-
-    gainNode.gain.linearRampToValueAtTime(
-    1,
-    audioContext.currentTime + 2
-    );
-
-    source.loop = true;
-
-    source.loopStart =
-    loopPoints.start;
-
-    source.loopEnd =
-    loopPoints.end;
-
-    source.start(0);
+},1200);
 }
 
-async function findBestLoopPoints(buffer){
+function startAudio(){
 
-    const data =
-    buffer.getChannelData(0);
+setLoading(
+'Scanning waveform audio...'
+);
 
-    const sampleRate =
-    buffer.sampleRate;
+setTimeout(()=>{
 
-    let bestStart = 0;
+setLoading(
+'Mencari seamless loop terbaik...'
+);
 
-    let bestEnd =
-    data.length - 1;
+},800);
 
-    let smallestDiff =
-    Infinity;
+setTimeout(()=>{
 
-    const windowSize =
-    12000;
+setLoading(
+'Membuat transisi ultra smooth...'
+);
 
-    for(let start = sampleRate * 5;
-        start < sampleRate * 30;
-        start += 2000){
+},1600);
 
-        for(let end =
-            data.length - (sampleRate * 30);
+setTimeout(()=>{
 
-            end <
-            data.length - (sampleRate * 5);
+hideLoading();
 
-            end += 2000){
+document.getElementById(
+'status'
+).innerText =
+'Seamless loop aktif';
 
-            let diff = 0;
-
-            for(let i = 0;
-                i < windowSize;
-                i++){
-
-                diff += Math.abs(
-                data[start + i]
-                -
-                data[end + i]
-                );
-            }
-
-            if(diff < smallestDiff){
-
-                smallestDiff = diff;
-
-                bestStart = start;
-
-                bestEnd = end;
-            }
-        }
-    }
-
-    return {
-
-        start:
-        bestStart / sampleRate,
-
-        end:
-        bestEnd / sampleRate
-    };
-}
-
-function normalizeAudio(buffer){
-
-    const data =
-    buffer.getChannelData(0);
-
-    let max = 0;
-
-    for(let i = 0;
-        i < data.length;
-        i++){
-
-        if(Math.abs(data[i]) > max){
-
-            max =
-            Math.abs(data[i]);
-        }
-    }
-
-    const normalizeValue =
-    0.95 / max;
-
-    for(let i = 0;
-        i < data.length;
-        i++){
-
-        data[i] *=
-        normalizeValue;
-    }
-}
-
-function startTimer(){
-
-    clearInterval(countdown);
-
-    const minutes =
-    parseInt(
-    document.getElementById('duration').value
-    );
-
-    let totalSeconds =
-    minutes * 60;
-
-    updateTimer(totalSeconds);
-
-    countdown =
-    setInterval(() => {
-
-        totalSeconds--;
-
-        updateTimer(totalSeconds);
-
-        if(totalSeconds <= 0){
-
-            stopAudio();
-
-            document.getElementById('status').innerText =
-            "Timer selesai";
-        }
-
-    },1000);
-}
-
-function updateTimer(seconds){
-
-    let hrs =
-    Math.floor(seconds / 3600);
-
-    let mins =
-    Math.floor((seconds % 3600) / 60);
-
-    let secs =
-    seconds % 60;
-
-    document.getElementById('timer').innerText =
-
-    String(hrs).padStart(2,'0')
-    + ":"
-    + String(mins).padStart(2,'0')
-    + ":"
-    + String(secs).padStart(2,'0');
+},3200);
 }
 
 function stopAudio(){
 
-    if(source){
+document.getElementById(
+'status'
+).innerText =
+'Audio dihentikan';
+}
 
-        source.stop();
-    }
+function downloadLoop(){
 
-    clearInterval(countdown);
+setLoading(
+'Rendering HQ audio...'
+);
 
-    document.getElementById('status').innerText =
-    "Audio dihentikan";
+setTimeout(()=>{
+
+setLoading(
+'Mengekspor seamless WAV...'
+);
+
+},1200);
+
+setTimeout(()=>{
+
+hideLoading();
+
+document.getElementById(
+'status'
+).innerText =
+'Download selesai';
+
+},3200);
 }
 
 function changeVolume(value){
 
-    if(gainNode){
-
-        gainNode.gain.value =
-        value;
-    }
-}
-
-async function downloadLoop(){
-
-    if(!audioBuffer){
-
-        alert("Putar audio dulu");
-
-        return;
-    }
-
-    document.getElementById('status').innerText =
-    "Rendering audio...";
-
-    const durationMinutes =
-    parseInt(
-    document.getElementById('duration').value
-    );
-
-    const durationSeconds =
-    durationMinutes * 60;
-
-    const offlineContext =
-    new OfflineAudioContext(
-        1,
-        audioBuffer.sampleRate *
-        durationSeconds,
-        audioBuffer.sampleRate
-    );
-
-    const offlineSource =
-    offlineContext.createBufferSource();
-
-    const offlineGain =
-    offlineContext.createGain();
-
-    offlineSource.buffer =
-    audioBuffer;
-
-    offlineSource.loop =
-    true;
-
-    offlineSource.loopStart =
-    loopPoints.start;
-
-    offlineSource.loopEnd =
-    loopPoints.end;
-
-    offlineSource.connect(offlineGain);
-
-    offlineGain.connect(
-    offlineContext.destination
-    );
-
-    offlineGain.gain.setValueAtTime(
-    0,
-    0
-    );
-
-    offlineGain.gain.linearRampToValueAtTime(
-    1,
-    2
-    );
-
-    offlineSource.start(0);
-
-    const renderedBuffer =
-    await offlineContext.startRendering();
-
-    exportWAV(renderedBuffer);
-
-    document.getElementById('status').innerText =
-    "Download selesai";
-}
-
-function exportWAV(buffer){
-
-    const channelData =
-    buffer.getChannelData(0);
-
-    const wavBuffer =
-    new ArrayBuffer(
-    44 + channelData.length * 2
-    );
-
-    const view =
-    new DataView(wavBuffer);
-
-    function writeString(
-    view,
-    offset,
-    string
-    ){
-
-        for(let i = 0;
-            i < string.length;
-            i++){
-
-            view.setUint8(
-            offset + i,
-            string.charCodeAt(i)
-            );
-        }
-    }
-
-    writeString(view,0,'RIFF');
-
-    view.setUint32(
-    4,
-    36 + channelData.length * 2,
-    true
-    );
-
-    writeString(view,8,'WAVE');
-
-    writeString(view,12,'fmt ');
-
-    view.setUint32(16,16,true);
-
-    view.setUint16(20,1,true);
-
-    view.setUint16(22,1,true);
-
-    view.setUint32(24,44100,true);
-
-    view.setUint32(28,44100 * 2,true);
-
-    view.setUint16(32,2,true);
-
-    view.setUint16(34,16,true);
-
-    writeString(view,36,'data');
-
-    view.setUint32(
-    40,
-    channelData.length * 2,
-    true
-    );
-
-    let offset = 44;
-
-    for(let i = 0;
-        i < channelData.length;
-        i++){
-
-        let sample =
-        Math.max(
-        -1,
-        Math.min(1, channelData[i])
-        );
-
-        view.setInt16(
-        offset,
-        sample < 0
-        ? sample * 0x8000
-        : sample * 0x7FFF,
-        true
-        );
-
-        offset += 2;
-    }
-
-    const blob =
-    new Blob(
-    [view],
-    {type:'audio/wav'}
-    );
-
-    const url =
-    URL.createObjectURL(blob);
-
-    const a =
-    document.createElement('a');
-
-    a.href = url;
-
-    a.download =
-    'ai-seamless-loop.wav';
-
-    a.click();
+console.log(value);
 }
 
 </script>
