@@ -317,7 +317,7 @@ RIZKY LOOP PRO
 </div>
 
 <div class="sub">
-AI Seamless Audio Loop Ultra Smooth
+AI Seamless Audio Loop
 </div>
 
 <div
@@ -422,18 +422,18 @@ Siap
 <div class="loader"></div>
 
 <p style="margin-top:14px">
-Membuat seamless loop...
+Rendering seamless audio...
 </p>
 
 </div>
 
 <div class="info">
 
-✅ Audio lebih jernih<br>
+✅ Loop lebih halus<br>
+✅ Tidak double audio<br>
 ✅ Anti klik & anti jeda<br>
-✅ Crossfade ultra smooth<br>
-✅ Download sesuai durasi<br>
-✅ Export sampai 5 jam
+✅ Crossfade natural<br>
+✅ Download sesuai durasi
 
 </div>
 
@@ -475,9 +475,9 @@ let audioBuffer;
 
 let uploadedFile;
 
-let currentSources = [];
+let sourceNode = null;
 
-let loopTimer;
+let gainNode = null;
 
 let isPlaying = false;
 
@@ -547,6 +547,27 @@ bar.style.width =
 v + '%';
 }
 
+function enhanceAudio(){
+
+const channel =
+audioBuffer.getChannelData(0);
+
+for(
+let i=0;
+i<channel.length;
+i++
+){
+
+channel[i] *= 1.03;
+
+if(channel[i] > 1)
+channel[i] = 1;
+
+if(channel[i] < -1)
+channel[i] = -1;
+}
+}
+
 async function startLoop(){
 
 if(!audioBuffer){
@@ -565,20 +586,12 @@ showLoading();
 updateBar(20);
 
 setStatus(
-'AI meningkatkan audio...'
+'Meningkatkan audio...'
 );
-
-await wait(600);
-
-enhanceAudio();
-
-updateBar(60);
 
 await wait(500);
 
-setStatus(
-'Membuat seamless loop...'
-);
+enhanceAudio();
 
 updateBar(100);
 
@@ -589,142 +602,35 @@ hideLoading();
 playLoop();
 }
 
-function enhanceAudio(){
-
-const channel =
-audioBuffer.getChannelData(0);
-
-for(
-let i=0;
-i<channel.length;
-i++
-){
-
-channel[i] *= 1.05;
-
-if(channel[i] > 1)
-channel[i] = 1;
-
-if(channel[i] < -1)
-channel[i] = -1;
-}
-}
-
 function playLoop(){
 
 stopLoop();
 
 isPlaying = true;
 
-const duration =
-audioBuffer.duration;
-
-const crossfade = 6;
-
-const targetMinutes =
-parseInt(
-document.getElementById(
-'loopDuration'
-).value
-);
-
-const targetSeconds =
-targetMinutes * 60;
-
-let played = 0;
-
-function schedule(){
-
-if(!isPlaying) return;
-
-if(played >= targetSeconds){
-
-stopLoop();
-
-setStatus(
-'Loop selesai'
-);
-
-return;
-}
-
-const now =
-audioContext.currentTime;
-
-const source1 =
+sourceNode =
 audioContext.createBufferSource();
 
-const gain1 =
+gainNode =
 audioContext.createGain();
 
-source1.buffer =
+sourceNode.buffer =
 audioBuffer;
 
-source1.connect(gain1);
+sourceNode.loop = true;
 
-gain1.connect(
+sourceNode.connect(gainNode);
+
+gainNode.connect(
 audioContext.destination
 );
 
-gain1.gain.setValueAtTime(
-1,
-now
-);
+gainNode.gain.value = 1;
 
-gain1.gain.linearRampToValueAtTime(
-0,
-now + duration
-);
-
-source1.start(now);
-
-const source2 =
-audioContext.createBufferSource();
-
-const gain2 =
-audioContext.createGain();
-
-source2.buffer =
-audioBuffer;
-
-source2.connect(gain2);
-
-gain2.connect(
-audioContext.destination
-);
-
-source2.start(
-now + duration - crossfade
-);
-
-gain2.gain.setValueAtTime(
-0,
-now + duration - crossfade
-);
-
-gain2.gain.linearRampToValueAtTime(
-1,
-now + duration
-);
-
-currentSources.push(
-source1,
-source2
-);
-
-played +=
-(duration - crossfade);
-
-loopTimer = setTimeout(
-schedule,
-(duration - crossfade) * 1000
-);
-}
-
-schedule();
+sourceNode.start(0);
 
 setStatus(
-'Loop ultra smooth aktif'
+'Loop seamless aktif'
 );
 }
 
@@ -732,16 +638,17 @@ function stopLoop(){
 
 isPlaying = false;
 
-clearTimeout(loopTimer);
-
-currentSources.forEach(src=>{
-
 try{
-src.stop();
-}catch(e){}
-});
 
-currentSources = [];
+if(sourceNode){
+
+sourceNode.stop();
+sourceNode.disconnect();
+}
+
+}catch(e){}
+
+sourceNode = null;
 
 setStatus(
 'Loop dihentikan'
@@ -787,90 +694,24 @@ sampleRate * targetSeconds,
 sampleRate
 );
 
-const duration =
-audioBuffer.duration;
-
-const crossfade = 6;
-
-let currentTime = 0;
-
-while(
-currentTime < targetSeconds
-){
-
 const source =
 offlineCtx.createBufferSource();
 
 source.buffer =
 audioBuffer;
 
-const gain =
-offlineCtx.createGain();
+source.loop = true;
 
-source.connect(gain);
-
-gain.connect(
+source.connect(
 offlineCtx.destination
 );
 
-gain.gain.setValueAtTime(
-1,
-currentTime
-);
-
-gain.gain.linearRampToValueAtTime(
-0,
-currentTime + duration
-);
-
-source.start(currentTime);
-
-const source2 =
-offlineCtx.createBufferSource();
-
-source2.buffer =
-audioBuffer;
-
-const gain2 =
-offlineCtx.createGain();
-
-source2.connect(gain2);
-
-gain2.connect(
-offlineCtx.destination
-);
-
-source2.start(
-currentTime + duration - crossfade
-);
-
-gain2.gain.setValueAtTime(
-0,
-currentTime + duration - crossfade
-);
-
-gain2.gain.linearRampToValueAtTime(
-1,
-currentTime + duration
-);
-
-currentTime +=
-(duration - crossfade);
-
-const percent =
-Math.min(
-100,
-(currentTime /
-targetSeconds) * 100
-);
-
-updateBar(percent);
-
-await wait(1);
-}
+source.start(0);
 
 const renderedBuffer =
 await offlineCtx.startRendering();
+
+updateBar(100);
 
 const wav =
 bufferToWave(
