@@ -21,9 +21,9 @@ body{
 background:
 linear-gradient(
 135deg,
-#0a1020,
-#141c38,
-#222b50
+#0b1020,
+#151d38,
+#232d52
 );
 
 min-height:100vh;
@@ -42,7 +42,7 @@ color:white;
 .container{
 
 width:100%;
-max-width:440px;
+max-width:450px;
 
 padding:24px;
 
@@ -121,6 +121,7 @@ background:
 rgba(255,255,255,0.06);
 }
 
+input,
 select,
 button{
 
@@ -136,11 +137,10 @@ border-radius:18px;
 
 font-size:15px;
 
-font-weight:bold;
-
 outline:none;
 }
 
+input,
 select{
 
 background:
@@ -150,6 +150,8 @@ color:white;
 }
 
 button{
+
+font-weight:bold;
 
 cursor:pointer;
 
@@ -177,6 +179,16 @@ linear-gradient(
 135deg,
 #ff5d7a,
 #ff7f7f
+);
+}
+
+.download{
+
+background:
+linear-gradient(
+135deg,
+#00b894,
+#00d2a0
 );
 }
 
@@ -311,7 +323,7 @@ AI Smart Seamless Audio Loop
 class="upload"
 id="uploadBox">
 
-🎵 Upload Audio
+🎵 Upload Lagu / Audio
 
 </div>
 
@@ -320,6 +332,11 @@ type="file"
 id="audioFile"
 accept="audio/*"
 hidden>
+
+<input
+type="text"
+id="songName"
+placeholder="Nama hasil loop audio">
 
 <select id="loopDuration">
 
@@ -371,6 +388,12 @@ onclick="stopLoop()">
 STOP LOOP
 </button>
 
+<button
+class="download"
+onclick="downloadAudio()">
+DOWNLOAD AUDIO
+</button>
+
 <audio
 id="player"
 controls>
@@ -403,9 +426,9 @@ AI mencari loop terbaik...
 <div class="info">
 
 ✅ Auto cari titik loop terbaik<br>
-✅ Auto gabung audio halus<br>
+✅ Auto crossfade seamless<br>
 ✅ Anti klik & anti jeda<br>
-✅ Crossfade seamless AI
+✅ Cocok untuk piano & ambience
 
 </div>
 
@@ -525,7 +548,7 @@ stopLoop();
 
 showLoading();
 
-updateBar(10);
+updateBar(15);
 
 await wait(1000);
 
@@ -545,22 +568,18 @@ points.start;
 loopEnd =
 points.end;
 
-updateBar(45);
+updateBar(55);
 
 await wait(1200);
 
 document.getElementById(
 'status'
 ).innerText =
-'Membuat seamless crossfade...';
-
-updateBar(75);
-
-await wait(1200);
+'Membuat seamless loop...';
 
 updateBar(100);
 
-await wait(700);
+await wait(900);
 
 hideLoading();
 
@@ -598,7 +617,7 @@ sampleRate * 3;
 start <
 total * 0.4;
 
-start += 3000
+start += 4000
 
 ){
 
@@ -610,7 +629,7 @@ total * 0.6;
 end <
 total - compareSize;
 
-end += 3000
+end += 4000
 
 ){
 
@@ -715,8 +734,6 @@ gain1.connect(
 audioContext.destination
 );
 
-source1.loop = false;
-
 source1.start(
 now,
 loopStart,
@@ -805,6 +822,47 @@ document.getElementById(
 'status'
 ).innerText =
 'Loop dihentikan';
+}
+
+function downloadAudio(){
+
+if(!uploadedFile){
+
+alert(
+'Belum ada audio'
+);
+
+return;
+}
+
+const customName =
+document.getElementById(
+'songName'
+).value.trim();
+
+const fileName =
+
+customName ||
+
+'rizky-smart-loop';
+
+const a =
+document.createElement('a');
+
+a.href =
+URL.createObjectURL(
+uploadedFile
+);
+
+a.download =
+fileName + '.wav';
+
+a.click();
+
+document.getElementById(
+'status'
+).innerText =
+'Download selesai';
 }
 
 function wait(ms){
