@@ -2,10 +2,9 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rizky AI Loop Pro</title>
+<title>Rizky Loop Pro</title>
 
 <style>
 
@@ -22,7 +21,7 @@ background:
 linear-gradient(
 135deg,
 #0f172a,
-#1e293b,
+#1e1b4b,
 #312e81
 );
 
@@ -42,7 +41,7 @@ color:white;
 .container{
 
 width:100%;
-max-width:460px;
+max-width:470px;
 
 padding:24px;
 
@@ -51,7 +50,7 @@ border-radius:30px;
 background:
 rgba(255,255,255,0.05);
 
-backdrop-filter:blur(18px);
+backdrop-filter:blur(20px);
 
 border:
 1px solid
@@ -59,12 +58,12 @@ rgba(255,255,255,0.08);
 
 box-shadow:
 0 0 40px
-rgba(0,0,0,0.4);
+rgba(0,0,0,0.35);
 }
 
 .logo{
 
-font-size:34px;
+font-size:36px;
 
 font-weight:bold;
 
@@ -80,7 +79,6 @@ linear-gradient(
 );
 
 -webkit-background-clip:text;
-
 -webkit-text-fill-color:transparent;
 }
 
@@ -113,6 +111,8 @@ transition:0.2s;
 
 background:
 rgba(255,255,255,0.03);
+
+font-size:18px;
 }
 
 .upload:hover{
@@ -127,7 +127,7 @@ button{
 
 width:100%;
 
-padding:15px;
+padding:16px;
 
 margin-top:14px;
 
@@ -135,7 +135,7 @@ border:none;
 
 border-radius:18px;
 
-font-size:15px;
+font-size:16px;
 
 outline:none;
 }
@@ -157,19 +157,22 @@ cursor:pointer;
 
 color:white;
 
-background:
-linear-gradient(
-135deg,
-#6366f1,
-#a855f7
-);
-
 transition:0.15s;
 }
 
 button:active{
 
 transform:scale(0.96);
+}
+
+.start{
+
+background:
+linear-gradient(
+135deg,
+#6366f1,
+#a855f7
+);
 }
 
 .stop{
@@ -244,7 +247,7 @@ font-size:14px;
 
 display:none;
 
-margin-top:20px;
+margin-top:22px;
 
 text-align:center;
 }
@@ -277,18 +280,18 @@ transform:rotate(360deg);
 
 .info{
 
-margin-top:18px;
+margin-top:20px;
 
-padding:14px;
+padding:15px;
 
-border-radius:18px;
+border-radius:20px;
 
 background:
 rgba(255,255,255,0.04);
 
 font-size:13px;
 
-line-height:1.6;
+line-height:1.7;
 }
 
 .credit{
@@ -314,7 +317,7 @@ RIZKY LOOP PRO
 </div>
 
 <div class="sub">
-AI Seamless Audio Loop Ultra Clear
+AI Seamless Audio Loop Ultra Smooth
 </div>
 
 <div
@@ -362,22 +365,38 @@ placeholder="Nama hasil audio">
 3 Jam
 </option>
 
+<option value="240">
+4 Jam
+</option>
+
+<option value="300">
+5 Jam
+</option>
+
 </select>
 
-<button onclick="startLoop()">
+<button
+class="start"
+onclick="startLoop()">
+
 START SMART LOOP
+
 </button>
 
 <button
 class="stop"
 onclick="stopLoop()">
+
 STOP LOOP
+
 </button>
 
 <button
 class="download"
 onclick="downloadAudio()">
+
 DOWNLOAD AUDIO
+
 </button>
 
 <audio
@@ -402,19 +421,19 @@ Siap
 
 <div class="loader"></div>
 
-<p style="margin-top:12px">
-Membuat loop ultra smooth...
+<p style="margin-top:14px">
+Membuat seamless loop...
 </p>
 
 </div>
 
 <div class="info">
 
-✅ Suara lebih jernih<br>
-✅ Auto volume balance<br>
-✅ Anti pecah & anti klik<br>
+✅ Audio lebih jernih<br>
+✅ Anti klik & anti jeda<br>
 ✅ Crossfade ultra smooth<br>
-✅ Loading cepat
+✅ Download sesuai durasi<br>
+✅ Export sampai 5 jam
 
 </div>
 
@@ -439,6 +458,11 @@ document.getElementById(
 const player =
 document.getElementById(
 'player'
+);
+
+const bar =
+document.getElementById(
+'bar'
 );
 
 let audioContext =
@@ -473,12 +497,12 @@ if(!file) return;
 
 uploadedFile = file;
 
+showLoading();
+
 const url =
 URL.createObjectURL(file);
 
 player.src = url;
-
-showLoading();
 
 const arrayBuffer =
 await file.arrayBuffer();
@@ -490,12 +514,18 @@ arrayBuffer
 
 hideLoading();
 
-document.getElementById(
-'status'
-).innerText =
-'Audio siap';
+setStatus(
+'Audio siap'
+);
 }
 );
+
+function setStatus(text){
+
+document.getElementById(
+'status'
+).innerText = text;
+}
 
 function showLoading(){
 
@@ -513,9 +543,7 @@ document.getElementById(
 
 function updateBar(v){
 
-document.getElementById(
-'bar'
-).style.width =
+bar.style.width =
 v + '%';
 }
 
@@ -534,16 +562,23 @@ stopLoop();
 
 showLoading();
 
-updateBar(30);
+updateBar(20);
+
+setStatus(
+'AI meningkatkan audio...'
+);
+
+await wait(600);
+
+enhanceAudio();
+
+updateBar(60);
 
 await wait(500);
 
-document.getElementById(
-'status'
-).innerText =
-'AI meningkatkan kejernihan audio...';
-
-enhanceAudio();
+setStatus(
+'Membuat seamless loop...'
+);
 
 updateBar(100);
 
@@ -565,7 +600,7 @@ i<channel.length;
 i++
 ){
 
-channel[i] *= 1.08;
+channel[i] *= 1.05;
 
 if(channel[i] > 1)
 channel[i] = 1;
@@ -588,11 +623,9 @@ const crossfade = 6;
 
 const targetMinutes =
 parseInt(
-
 document.getElementById(
 'loopDuration'
 ).value
-
 );
 
 const targetSeconds =
@@ -608,10 +641,9 @@ if(played >= targetSeconds){
 
 stopLoop();
 
-document.getElementById(
-'status'
-).innerText =
-'Loop selesai';
+setStatus(
+'Loop selesai'
+);
 
 return;
 }
@@ -691,10 +723,9 @@ schedule,
 
 schedule();
 
-document.getElementById(
-'status'
-).innerText =
-'Loop ultra smooth aktif';
+setStatus(
+'Loop ultra smooth aktif'
+);
 }
 
 function stopLoop(){
@@ -712,49 +743,294 @@ src.stop();
 
 currentSources = [];
 
-document.getElementById(
-'status'
-).innerText =
-'Loop dihentikan';
+setStatus(
+'Loop dihentikan'
+);
 }
 
-function downloadAudio(){
+async function downloadAudio(){
 
-if(!uploadedFile){
+if(!audioBuffer){
 
 alert(
-'Belum ada audio'
+'Upload audio dulu'
 );
 
 return;
 }
+
+showLoading();
+
+setStatus(
+'Rendering audio...'
+);
+
+updateBar(10);
+
+const targetMinutes =
+parseInt(
+document.getElementById(
+'loopDuration'
+).value
+);
+
+const targetSeconds =
+targetMinutes * 60;
+
+const sampleRate =
+audioBuffer.sampleRate;
+
+const offlineCtx =
+new OfflineAudioContext(
+2,
+sampleRate * targetSeconds,
+sampleRate
+);
+
+const duration =
+audioBuffer.duration;
+
+const crossfade = 6;
+
+let currentTime = 0;
+
+while(
+currentTime < targetSeconds
+){
+
+const source =
+offlineCtx.createBufferSource();
+
+source.buffer =
+audioBuffer;
+
+const gain =
+offlineCtx.createGain();
+
+source.connect(gain);
+
+gain.connect(
+offlineCtx.destination
+);
+
+gain.gain.setValueAtTime(
+1,
+currentTime
+);
+
+gain.gain.linearRampToValueAtTime(
+0,
+currentTime + duration
+);
+
+source.start(currentTime);
+
+const source2 =
+offlineCtx.createBufferSource();
+
+source2.buffer =
+audioBuffer;
+
+const gain2 =
+offlineCtx.createGain();
+
+source2.connect(gain2);
+
+gain2.connect(
+offlineCtx.destination
+);
+
+source2.start(
+currentTime + duration - crossfade
+);
+
+gain2.gain.setValueAtTime(
+0,
+currentTime + duration - crossfade
+);
+
+gain2.gain.linearRampToValueAtTime(
+1,
+currentTime + duration
+);
+
+currentTime +=
+(duration - crossfade);
+
+const percent =
+Math.min(
+100,
+(currentTime /
+targetSeconds) * 100
+);
+
+updateBar(percent);
+
+await wait(1);
+}
+
+const renderedBuffer =
+await offlineCtx.startRendering();
+
+const wav =
+bufferToWave(
+renderedBuffer,
+renderedBuffer.length
+);
+
+const blob =
+new Blob(
+[wav],
+{type:'audio/wav'}
+);
+
+const url =
+URL.createObjectURL(blob);
+
+const a =
+document.createElement('a');
 
 const customName =
 document.getElementById(
 'songName'
 ).value.trim();
 
-const fileName =
-customName ||
-'rizky-loop-pro';
-
-const a =
-document.createElement('a');
-
-a.href =
-URL.createObjectURL(
-uploadedFile
-);
+a.href = url;
 
 a.download =
-fileName + '.wav';
+(customName ||
+'rizky-loop')
++ '.wav';
 
 a.click();
 
-document.getElementById(
-'status'
-).innerText =
-'Download selesai';
+hideLoading();
+
+setStatus(
+'Download selesai'
+);
+}
+
+function bufferToWave(abuffer,len){
+
+const numOfChan =
+abuffer.numberOfChannels;
+
+const length =
+len * numOfChan * 2 + 44;
+
+const buffer =
+new ArrayBuffer(length);
+
+const view =
+new DataView(buffer);
+
+let channels = [];
+
+let offset = 0;
+
+let pos = 0;
+
+setUint32(0x46464952);
+
+setUint32(length - 8);
+
+setUint32(0x45564157);
+
+setUint32(0x20746d66);
+
+setUint32(16);
+
+setUint16(1);
+
+setUint16(numOfChan);
+
+setUint32(abuffer.sampleRate);
+
+setUint32(
+abuffer.sampleRate *
+2 * numOfChan
+);
+
+setUint16(
+numOfChan * 2
+);
+
+setUint16(16);
+
+setUint32(0x61746164);
+
+setUint32(length - pos - 4);
+
+for(
+let i=0;
+i<abuffer.numberOfChannels;
+i++
+){
+
+channels.push(
+abuffer.getChannelData(i)
+);
+}
+
+while(pos < length){
+
+for(
+let i=0;
+i<numOfChan;
+i++
+){
+
+let sample =
+Math.max(
+-1,
+Math.min(
+1,
+channels[i][offset]
+));
+
+sample =
+sample < 0
+?
+sample * 0x8000
+:
+sample * 0x7FFF;
+
+view.setInt16(
+pos,
+sample,
+true
+);
+
+pos += 2;
+}
+
+offset++;
+}
+
+return buffer;
+
+function setUint16(data){
+
+view.setUint16(
+pos,
+data,
+true
+);
+
+pos += 2;
+}
+
+function setUint32(data){
+
+view.setUint32(
+pos,
+data,
+true
+);
+
+pos += 4;
+}
 }
 
 function wait(ms){
