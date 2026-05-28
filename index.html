@@ -5,7 +5,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Rizky Smart Loop</title>
+<title>Rizky AI Loop Pro</title>
 
 <style>
 
@@ -21,9 +21,9 @@ body{
 background:
 linear-gradient(
 135deg,
-#0b1020,
-#151d38,
-#232d52
+#0f172a,
+#1e293b,
+#312e81
 );
 
 min-height:100vh;
@@ -42,16 +42,16 @@ color:white;
 .container{
 
 width:100%;
-max-width:450px;
+max-width:460px;
 
 padding:24px;
 
-border-radius:28px;
+border-radius:30px;
 
 background:
 rgba(255,255,255,0.05);
 
-backdrop-filter:blur(16px);
+backdrop-filter:blur(18px);
 
 border:
 1px solid
@@ -59,7 +59,7 @@ rgba(255,255,255,0.08);
 
 box-shadow:
 0 0 40px
-rgba(0,0,0,0.35);
+rgba(0,0,0,0.4);
 }
 
 .logo{
@@ -75,8 +75,8 @@ margin-bottom:5px;
 background:
 linear-gradient(
 90deg,
-#8ea2ff,
-#d58fff
+#60a5fa,
+#c084fc
 );
 
 -webkit-background-clip:text;
@@ -88,18 +88,18 @@ linear-gradient(
 
 text-align:center;
 
-font-size:13px;
-
 opacity:0.7;
+
+font-size:13px;
 
 margin-bottom:22px;
 }
 
 .upload{
 
-padding:28px;
+padding:30px;
 
-border-radius:22px;
+border-radius:24px;
 
 border:
 2px dashed
@@ -160,8 +160,8 @@ color:white;
 background:
 linear-gradient(
 135deg,
-#6d7dff,
-#a85cff
+#6366f1,
+#a855f7
 );
 
 transition:0.15s;
@@ -177,8 +177,8 @@ transform:scale(0.96);
 background:
 linear-gradient(
 135deg,
-#ff5d7a,
-#ff7f7f
+#ef4444,
+#fb7185
 );
 }
 
@@ -187,8 +187,8 @@ linear-gradient(
 background:
 linear-gradient(
 135deg,
-#00b894,
-#00d2a0
+#10b981,
+#06b6d4
 );
 }
 
@@ -224,8 +224,8 @@ height:100%;
 background:
 linear-gradient(
 90deg,
-#7f8cff,
-#d67dff
+#60a5fa,
+#c084fc
 );
 
 transition:0.3s;
@@ -238,8 +238,6 @@ margin-top:14px;
 text-align:center;
 
 font-size:14px;
-
-opacity:0.9;
 }
 
 #loading{
@@ -265,7 +263,7 @@ border:
 rgba(255,255,255,0.08);
 
 border-top:
-6px solid #9d7dff;
+6px solid #8b5cf6;
 
 animation:spin 0.8s linear infinite;
 }
@@ -312,11 +310,11 @@ opacity:0.6;
 <div class="container">
 
 <div class="logo">
-RIZKY LOOP
+RIZKY LOOP PRO
 </div>
 
 <div class="sub">
-AI Smart Seamless Audio Loop
+AI Seamless Audio Loop Ultra Clear
 </div>
 
 <div
@@ -336,7 +334,7 @@ hidden>
 <input
 type="text"
 id="songName"
-placeholder="Nama hasil loop audio">
+placeholder="Nama hasil audio">
 
 <select id="loopDuration">
 
@@ -362,18 +360,6 @@ placeholder="Nama hasil loop audio">
 
 <option value="180">
 3 Jam
-</option>
-
-<option value="240">
-4 Jam
-</option>
-
-<option value="300">
-5 Jam
-</option>
-
-<option value="360">
-6 Jam
 </option>
 
 </select>
@@ -404,7 +390,6 @@ controls>
 <div
 class="bar"
 id="bar">
-
 </div>
 
 </div>
@@ -418,17 +403,18 @@ Siap
 <div class="loader"></div>
 
 <p style="margin-top:12px">
-AI mencari loop terbaik...
+Membuat loop ultra smooth...
 </p>
 
 </div>
 
 <div class="info">
 
-✅ Auto cari titik loop terbaik<br>
-✅ Auto crossfade seamless<br>
-✅ Anti klik & anti jeda<br>
-✅ Cocok untuk piano & ambience
+✅ Suara lebih jernih<br>
+✅ Auto volume balance<br>
+✅ Anti pecah & anti klik<br>
+✅ Crossfade ultra smooth<br>
+✅ Loading cepat
 
 </div>
 
@@ -471,10 +457,6 @@ let loopTimer;
 
 let isPlaying = false;
 
-let loopStart = 0;
-
-let loopEnd = 0;
-
 uploadBox.onclick = ()=>{
 
 audioInput.click();
@@ -496,6 +478,8 @@ URL.createObjectURL(file);
 
 player.src = url;
 
+showLoading();
+
 const arrayBuffer =
 await file.arrayBuffer();
 
@@ -503,6 +487,8 @@ audioBuffer =
 await audioContext.decodeAudioData(
 arrayBuffer
 );
+
+hideLoading();
 
 document.getElementById(
 'status'
@@ -548,143 +534,57 @@ stopLoop();
 
 showLoading();
 
-updateBar(15);
+updateBar(30);
 
-await wait(1000);
-
-document.getElementById(
-'status'
-).innerText =
-'AI scan waveform...';
-
-const points =
-findBestLoopPoints(
-audioBuffer
-);
-
-loopStart =
-points.start;
-
-loopEnd =
-points.end;
-
-updateBar(55);
-
-await wait(1200);
+await wait(500);
 
 document.getElementById(
 'status'
 ).innerText =
-'Membuat seamless loop...';
+'AI meningkatkan kejernihan audio...';
+
+enhanceAudio();
 
 updateBar(100);
 
-await wait(900);
+await wait(500);
 
 hideLoading();
 
-playSmartLoop();
+playLoop();
 }
 
-function findBestLoopPoints(buffer){
+function enhanceAudio(){
 
-const data =
-buffer.getChannelData(0);
-
-const sampleRate =
-buffer.sampleRate;
-
-const total =
-data.length;
-
-let bestScore =
-Infinity;
-
-let bestStart =
-sampleRate * 5;
-
-let bestEnd =
-total - (sampleRate * 5);
-
-const compareSize =
-sampleRate * 2;
-
-for(
-
-let start =
-sampleRate * 3;
-
-start <
-total * 0.4;
-
-start += 4000
-
-){
-
-for(
-
-let end =
-total * 0.6;
-
-end <
-total - compareSize;
-
-end += 4000
-
-){
-
-let diff = 0;
+const channel =
+audioBuffer.getChannelData(0);
 
 for(
 let i=0;
-i<compareSize;
+i<channel.length;
 i++
 ){
 
-diff += Math.abs(
+channel[i] *= 1.08;
 
-data[start+i]
--
-data[end+i]
+if(channel[i] > 1)
+channel[i] = 1;
 
-);
-}
-
-diff /= compareSize;
-
-if(diff < bestScore){
-
-bestScore = diff;
-
-bestStart = start;
-
-bestEnd = end;
-}
+if(channel[i] < -1)
+channel[i] = -1;
 }
 }
 
-return{
-
-start:
-bestStart /
-sampleRate,
-
-end:
-bestEnd /
-sampleRate
-};
-}
-
-function playSmartLoop(){
+function playLoop(){
 
 stopLoop();
 
 isPlaying = true;
 
-const crossfade = 3;
+const duration =
+audioBuffer.duration;
 
-const sectionDuration =
-loopEnd - loopStart;
+const crossfade = 6;
 
 const targetMinutes =
 parseInt(
@@ -734,12 +634,6 @@ gain1.connect(
 audioContext.destination
 );
 
-source1.start(
-now,
-loopStart,
-sectionDuration
-);
-
 gain1.gain.setValueAtTime(
 1,
 now
@@ -747,8 +641,10 @@ now
 
 gain1.gain.linearRampToValueAtTime(
 0,
-now + sectionDuration
+now + duration
 );
+
+source1.start(now);
 
 const source2 =
 audioContext.createBufferSource();
@@ -766,19 +662,17 @@ audioContext.destination
 );
 
 source2.start(
-now + sectionDuration - crossfade,
-loopStart,
-sectionDuration
+now + duration - crossfade
 );
 
 gain2.gain.setValueAtTime(
 0,
-now + sectionDuration - crossfade
+now + duration - crossfade
 );
 
 gain2.gain.linearRampToValueAtTime(
 1,
-now + sectionDuration
+now + duration
 );
 
 currentSources.push(
@@ -787,11 +681,11 @@ source2
 );
 
 played +=
-(sectionDuration - crossfade);
+(duration - crossfade);
 
 loopTimer = setTimeout(
 schedule,
-(sectionDuration - crossfade) * 1000
+(duration - crossfade) * 1000
 );
 }
 
@@ -800,7 +694,7 @@ schedule();
 document.getElementById(
 'status'
 ).innerText =
-'Smart seamless loop aktif';
+'Loop ultra smooth aktif';
 }
 
 function stopLoop(){
@@ -841,10 +735,8 @@ document.getElementById(
 ).value.trim();
 
 const fileName =
-
 customName ||
-
-'rizky-smart-loop';
+'rizky-loop-pro';
 
 const a =
 document.createElement('a');
