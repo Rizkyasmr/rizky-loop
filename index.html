@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+content="width=device-width,initial-scale=1.0">
 
-<title>Rizky AI Loop Studio</title>
+<title>Rizky Screen Studio</title>
 
 <style>
 
@@ -18,18 +18,6 @@ font-family:sans-serif;
 
 body{
 
-background:
-linear-gradient(
-135deg,
-#050510,
-#151533,
-#26124f
-);
-
-background-size:300% 300%;
-
-animation:bg 12s ease infinite;
-
 min-height:100vh;
 
 display:flex;
@@ -39,6 +27,18 @@ justify-content:center;
 align-items:center;
 
 overflow:hidden;
+
+background:
+linear-gradient(
+135deg,
+#050510,
+#161633,
+#2a1460
+);
+
+background-size:300% 300%;
+
+animation:bg 12s ease infinite;
 
 color:white;
 }
@@ -70,24 +70,24 @@ border-radius:50%;
 background:
 radial-gradient(
 circle,
-rgba(130,90,255,0.28),
+rgba(120,90,255,0.25),
 transparent
 );
 
 filter:blur(90px);
 
-animation:float 8s ease infinite;
+animation:float 7s ease infinite;
 }
 
 .glow:nth-child(1){
 
-top:-150px;
+top:-180px;
 left:-150px;
 }
 
 .glow:nth-child(2){
 
-bottom:-150px;
+bottom:-180px;
 right:-150px;
 
 animation-delay:2s;
@@ -139,6 +139,8 @@ font-weight:bold;
 
 text-align:center;
 
+margin-bottom:6px;
+
 background:
 linear-gradient(
 90deg,
@@ -159,66 +161,7 @@ font-size:13px;
 
 opacity:0.7;
 
-margin-top:5px;
 margin-bottom:24px;
-}
-
-.drop{
-
-border:
-2px dashed
-rgba(255,255,255,0.2);
-
-padding:32px;
-
-border-radius:26px;
-
-text-align:center;
-
-cursor:pointer;
-
-transition:0.3s;
-
-background:
-rgba(255,255,255,0.03);
-}
-
-.drop:hover{
-
-background:
-rgba(255,255,255,0.06);
-}
-
-.drop.active{
-
-border-color:#9d7dff;
-
-box-shadow:
-0 0 30px
-rgba(120,90,255,0.4);
-}
-
-select,
-input{
-
-width:100%;
-
-padding:15px;
-
-margin-top:14px;
-
-border:none;
-
-border-radius:18px;
-
-background:
-rgba(255,255,255,0.08);
-
-color:white;
-
-outline:none;
-
-font-size:15px;
 }
 
 button{
@@ -265,7 +208,7 @@ transform:translateY(-2px);
 
 box-shadow:
 0 0 35px
-rgba(120,90,255,0.6);
+rgba(120,90,255,0.55);
 }
 
 button:active{
@@ -302,20 +245,36 @@ width:320px;
 height:320px;
 }
 
-audio{
+.stop{
+
+background:
+linear-gradient(
+135deg,
+#ff4d6d,
+#ff7b7b
+);
+}
+
+video{
 
 width:100%;
 
-margin-top:18px;
+margin-top:20px;
 
-border-radius:18px;
+border-radius:24px;
+
+background:black;
+
+box-shadow:
+0 0 30px
+rgba(120,90,255,0.3);
 }
 
 canvas{
 
 width:100%;
 
-height:100px;
+height:90px;
 
 margin-top:18px;
 
@@ -411,7 +370,7 @@ transform:rotate(360deg);
 
 .loadingText{
 
-margin-top:15px;
+margin-top:16px;
 
 font-size:14px;
 
@@ -433,33 +392,20 @@ opacity:0.3;
 }
 }
 
-.vip{
+.info{
 
 margin-top:18px;
 
-padding:14px;
-
-border-radius:18px;
-
-background:
-linear-gradient(
-135deg,
-rgba(255,215,0,0.12),
-rgba(255,255,255,0.05)
-);
-
-font-size:13px;
-
 text-align:center;
 
-border:
-1px solid
-rgba(255,215,0,0.2);
+font-size:12px;
+
+opacity:0.6;
 }
 
 .credit{
 
-margin-top:18px;
+margin-top:12px;
 
 text-align:center;
 
@@ -479,130 +425,33 @@ color:#d7c2ff;
 <div class="container">
 
 <div class="logo">
-RIZKY AI LOOP
+RIZKY SCREEN
 </div>
 
 <div class="sub">
-AI Seamless Audio Studio
+Screen Recorder & Live Capture
 </div>
 
-<div class="drop"
-id="dropArea">
-
-🎵 Drag & Drop Audio
-
-</div>
-
-<input
-type="file"
-id="audioFile"
-accept="audio/*"
-hidden>
-
-<select id="loopDuration">
-
-<option value="5">
-Loop 5 Menit
-</option>
-
-<option value="10">
-Loop 10 Menit
-</option>
-
-<option value="30">
-Loop 30 Menit
-</option>
-
-<option value="60">
-Loop 1 Jam
-</option>
-
-<option value="120">
-Loop 2 Jam
-</option>
-
-<option value="180">
-Loop 3 Jam
-</option>
-
-<option value="240">
-Loop 4 Jam
-</option>
-
-<option value="300">
-Loop 5 Jam
-</option>
-
-<option value="360">
-Loop 6 Jam
-</option>
-
-</select>
-
-<select id="effectMode">
-
-<option>
-AI Mastering
-</option>
-
-<option>
-8D Audio
-</option>
-
-<option>
-Cinema Reverb
-</option>
-
-<option>
-Forest Reverb
-</option>
-
-<option>
-Sleep Deep Mode
-</option>
-
-<option>
-Rain Piano Boost
-</option>
-
-</select>
-
-<select id="weatherMode">
-
-<option>
-No Overlay
-</option>
-
-<option>
-Rain Overlay
-</option>
-
-<option>
-Thunder Overlay
-</option>
-
-<option>
-Forest Overlay
-</option>
-
-<option>
-Night Overlay
-</option>
-
-</select>
-
-<button onclick="processAudio()">
-START AI LOOP
+<button onclick="startScreen()">
+TAMPILKAN LAYAR
 </button>
 
-<button onclick="downloadAudio()">
-DOWNLOAD LOOP
+<button onclick="startRecord()">
+MULAI RECORD
 </button>
 
-<audio
-id="player"
+<button
+class="stop"
+onclick="stopRecord()">
+STOP RECORD
+</button>
+
+<video
+id="screenVideo"
+autoplay
+playsinline
 controls>
-</audio>
+</video>
 
 <canvas id="visualizer"></canvas>
 
@@ -617,7 +466,7 @@ id="bar">
 </div>
 
 <div id="status">
-Siap memproses audio
+Siap merekam layar
 </div>
 
 <div id="loading">
@@ -628,15 +477,15 @@ Siap memproses audio
 class="loadingText"
 id="loadingText">
 
-AI sedang memproses...
+Memulai AI capture...
 
 </div>
 
 </div>
 
-<div class="vip">
+<div class="info">
 
-💎 VIP CLOUD AI RENDER • 8K • FAST SERVER • NO ADS
+Live Screen • HD Record • Offline Mode
 
 </div>
 
@@ -650,104 +499,16 @@ Made by Rizky
 
 <script>
 
-const dropArea =
+const video =
 document.getElementById(
-'dropArea'
+'screenVideo'
 );
 
-const player =
-document.getElementById(
-'player'
-);
+let mediaRecorder;
 
-let uploadedFile;
+let recordedChunks = [];
 
-let audioContext =
-new(
-window.AudioContext ||
-window.webkitAudioContext
-)();
-
-let audioBuffer;
-
-let source;
-
-dropArea.onclick = ()=>{
-
-document.getElementById(
-'audioFile'
-).click();
-};
-
-dropArea.addEventListener(
-'dragover',
-e=>{
-
-e.preventDefault();
-
-dropArea.classList.add(
-'active'
-);
-});
-
-dropArea.addEventListener(
-'dragleave',
-()=>{
-
-dropArea.classList.remove(
-'active'
-);
-});
-
-dropArea.addEventListener(
-'drop',
-e=>{
-
-e.preventDefault();
-
-dropArea.classList.remove(
-'active'
-);
-
-const file =
-e.dataTransfer.files[0];
-
-handleAudio(file);
-});
-
-document.getElementById(
-'audioFile'
-).addEventListener(
-'change',
-e=>{
-
-handleAudio(
-e.target.files[0]
-);
-});
-
-async function handleAudio(file){
-
-uploadedFile = file;
-
-const url =
-URL.createObjectURL(file);
-
-player.src = url;
-
-const arrayBuffer =
-await file.arrayBuffer();
-
-audioBuffer =
-await audioContext.decodeAudioData(
-arrayBuffer
-);
-
-document.getElementById(
-'status'
-).innerText =
-'Audio berhasil dimuat';
-}
+let screenStream;
 
 function setLoading(text){
 
@@ -775,204 +536,138 @@ document.getElementById(
 value + '%';
 }
 
-async function processAudio(){
+async function startScreen(){
 
-if(!audioBuffer){
-
-alert(
-'Upload audio dulu'
-);
-
-return;
-}
+try{
 
 setLoading(
-'AI mendeteksi BPM...'
+'Meminta izin layar...'
 );
 
-updateBar(10);
+updateBar(20);
 
-await wait(1000);
+screenStream =
+await navigator.mediaDevices.getDisplayMedia({
 
-setLoading(
-'Mencari titik loop terbaik...'
-);
+video:true,
+audio:true
 
-updateBar(25);
-
-await wait(1400);
-
-setLoading(
-'AI Mastering & Denoise...'
-);
-
-updateBar(45);
-
-await wait(1500);
-
-setLoading(
-'Membuat 8D & Reverb...'
-);
-
-updateBar(65);
-
-await wait(1700);
-
-setLoading(
-'Menyinkronkan beat loop...'
-);
-
-updateBar(82);
-
-await wait(1800);
-
-setLoading(
-'Cloud AI Rendering...'
-);
+});
 
 updateBar(100);
 
-await wait(1500);
-
 hideLoading();
+
+video.srcObject =
+screenStream;
 
 document.getElementById(
 'status'
 ).innerText =
-'AI loop selesai';
+'Layar berhasil ditampilkan';
 
-playSeamlessLoop();
-}
-
-function playSeamlessLoop(){
-
-if(source){
-
-try{
-source.stop();
-}catch(e){}
-}
-
-const crossfade =
-4;
-
-const duration =
-audioBuffer.duration;
-
-function schedule(){
-
-const now =
-audioContext.currentTime;
-
-const src1 =
-audioContext.createBufferSource();
-
-const gain1 =
-audioContext.createGain();
-
-src1.buffer =
-audioBuffer;
-
-src1.connect(gain1);
-
-gain1.connect(
-audioContext.destination
-);
-
-gain1.gain.setValueAtTime(
-1,
-now
-);
-
-gain1.gain.linearRampToValueAtTime(
-0,
-now + duration
-);
-
-src1.start(now);
-
-const src2 =
-audioContext.createBufferSource();
-
-const gain2 =
-audioContext.createGain();
-
-src2.buffer =
-audioBuffer;
-
-src2.connect(gain2);
-
-gain2.connect(
-audioContext.destination
-);
-
-gain2.gain.setValueAtTime(
-0,
-now + duration - crossfade
-);
-
-gain2.gain.linearRampToValueAtTime(
-1,
-now + duration
-);
-
-src2.start(
-now + duration - crossfade
-);
-
-source = src2;
-
-setTimeout(
-schedule,
-(duration - crossfade) * 1000
-);
-}
-
-schedule();
-}
-
-async function downloadAudio(){
-
-if(!uploadedFile){
-
-alert(
-'Belum ada audio'
-);
-
-return;
-}
-
-setLoading(
-'Menyiapkan download...'
-);
-
-updateBar(30);
-
-await wait(1200);
-
-updateBar(100);
-
-await wait(1000);
+}catch(err){
 
 hideLoading();
+
+alert(
+'Izin layar ditolak'
+);
+
+console.log(err);
+}
+}
+
+async function startRecord(){
+
+if(!screenStream){
+
+await startScreen();
+}
+
+recordedChunks = [];
+
+mediaRecorder =
+new MediaRecorder(screenStream);
+
+mediaRecorder.ondataavailable =
+e=>{
+
+if(e.data.size > 0){
+
+recordedChunks.push(
+e.data
+);
+}
+};
+
+mediaRecorder.onstop = ()=>{
+
+const blob =
+new Blob(recordedChunks,{
+
+type:'video/webm'
+
+});
+
+const url =
+URL.createObjectURL(blob);
 
 const a =
 document.createElement('a');
 
-a.href =
-URL.createObjectURL(
-uploadedFile
-);
+a.href = url;
 
 a.download =
-'rizky-ai-loop.wav';
+'rizky-screen-record.webm';
 
 a.click();
 
 document.getElementById(
 'status'
 ).innerText =
-'Download selesai';
+'Recording selesai';
+};
+
+mediaRecorder.start();
+
+document.getElementById(
+'status'
+).innerText =
+'Recording dimulai';
+
+fakeRealtimeProgress();
+}
+
+function stopRecord(){
+
+if(mediaRecorder){
+
+mediaRecorder.stop();
+}
+
+updateBar(100);
+
+document.getElementById(
+'status'
+).innerText =
+'Menghentikan recording...';
+}
+
+async function fakeRealtimeProgress(){
+
+let progress = 0;
+
+while(progress < 95){
+
+await wait(900);
+
+progress += 3;
+
+updateBar(progress);
+
+if(!mediaRecorder) break;
+}
 }
 
 function wait(ms){
@@ -1011,20 +706,20 @@ canvas.height
 
 for(
 let i=0;
-i<50;
+i<45;
 i++
 ){
 
 const h =
-Math.random()*90;
+Math.random()*85;
 
 ctx.fillStyle =
-`hsl(${i*6},100%,60%)`;
+`hsl(${i*7},100%,60%)`;
 
 ctx.fillRect(
-i*10,
+i*11,
 canvas.height-h,
-7,
+8,
 h
 );
 }
