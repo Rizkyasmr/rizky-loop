@@ -5,7 +5,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>Rizky Loop Audio</title>
+<title>Rizky Smart Loop</title>
 
 <style>
 
@@ -21,9 +21,9 @@ body{
 background:
 linear-gradient(
 135deg,
-#0b1020,
-#141b34,
-#1e2850
+#0a1020,
+#141c38,
+#222b50
 );
 
 min-height:100vh;
@@ -42,9 +42,9 @@ color:white;
 .container{
 
 width:100%;
-max-width:430px;
+max-width:440px;
 
-padding:25px;
+padding:24px;
 
 border-radius:28px;
 
@@ -59,7 +59,7 @@ rgba(255,255,255,0.08);
 
 box-shadow:
 0 0 40px
-rgba(0,0,0,0.3);
+rgba(0,0,0,0.35);
 }
 
 .logo{
@@ -121,6 +121,7 @@ background:
 rgba(255,255,255,0.06);
 }
 
+select,
 button{
 
 width:100%;
@@ -136,6 +137,19 @@ border-radius:18px;
 font-size:15px;
 
 font-weight:bold;
+
+outline:none;
+}
+
+select{
+
+background:
+rgba(255,255,255,0.08);
+
+color:white;
+}
+
+button{
 
 cursor:pointer;
 
@@ -213,7 +227,7 @@ text-align:center;
 
 font-size:14px;
 
-opacity:0.85;
+opacity:0.9;
 }
 
 #loading{
@@ -251,6 +265,22 @@ transform:rotate(360deg);
 }
 }
 
+.info{
+
+margin-top:18px;
+
+padding:14px;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,0.04);
+
+font-size:13px;
+
+line-height:1.6;
+}
+
 .credit{
 
 margin-top:18px;
@@ -274,7 +304,7 @@ RIZKY LOOP
 </div>
 
 <div class="sub">
-Simple Seamless Audio Loop
+AI Smart Seamless Audio Loop
 </div>
 
 <div
@@ -291,18 +321,54 @@ id="audioFile"
 accept="audio/*"
 hidden>
 
+<select id="loopDuration">
+
+<option value="5">
+5 Menit
+</option>
+
+<option value="10">
+10 Menit
+</option>
+
+<option value="30">
+30 Menit
+</option>
+
+<option value="60">
+1 Jam
+</option>
+
+<option value="120">
+2 Jam
+</option>
+
+<option value="180">
+3 Jam
+</option>
+
+<option value="240">
+4 Jam
+</option>
+
+<option value="300">
+5 Jam
+</option>
+
+<option value="360">
+6 Jam
+</option>
+
+</select>
+
 <button onclick="startLoop()">
-START LOOP
+START SMART LOOP
 </button>
 
 <button
 class="stop"
 onclick="stopLoop()">
 STOP LOOP
-</button>
-
-<button onclick="downloadAudio()">
-DOWNLOAD AUDIO
 </button>
 
 <audio
@@ -329,8 +395,17 @@ Siap
 <div class="loader"></div>
 
 <p style="margin-top:12px">
-Membuat seamless loop...
+AI mencari loop terbaik...
 </p>
+
+</div>
+
+<div class="info">
+
+✅ Auto cari titik loop terbaik<br>
+✅ Auto gabung audio halus<br>
+✅ Anti klik & anti jeda<br>
+✅ Crossfade seamless AI
 
 </div>
 
@@ -365,11 +440,17 @@ window.webkitAudioContext
 
 let audioBuffer;
 
-let currentSource = null;
-
-let loopTimeout = null;
-
 let uploadedFile;
+
+let currentSources = [];
+
+let loopTimer;
+
+let isPlaying = false;
+
+let loopStart = 0;
+
+let loopEnd = 0;
 
 uploadBox.onclick = ()=>{
 
@@ -403,7 +484,7 @@ arrayBuffer
 document.getElementById(
 'status'
 ).innerText =
-'Audio siap diputar';
+'Audio siap';
 }
 );
 
@@ -440,61 +521,181 @@ alert(
 return;
 }
 
+stopLoop();
+
 showLoading();
 
 updateBar(10);
 
-await wait(800);
-
-updateBar(40);
-
-await wait(800);
-
-updateBar(75);
-
-await wait(900);
-
-updateBar(100);
-
-await wait(600);
-
-hideLoading();
-
-playSeamless();
-}
-
-function stopLoop(){
-
-if(currentSource){
-
-try{
-currentSource.stop();
-}catch(e){}
-}
-
-if(loopTimeout){
-
-clearTimeout(loopTimeout);
-}
-
-currentSource = null;
+await wait(1000);
 
 document.getElementById(
 'status'
 ).innerText =
-'Loop dihentikan';
+'AI scan waveform...';
+
+const points =
+findBestLoopPoints(
+audioBuffer
+);
+
+loopStart =
+points.start;
+
+loopEnd =
+points.end;
+
+updateBar(45);
+
+await wait(1200);
+
+document.getElementById(
+'status'
+).innerText =
+'Membuat seamless crossfade...';
+
+updateBar(75);
+
+await wait(1200);
+
+updateBar(100);
+
+await wait(700);
+
+hideLoading();
+
+playSmartLoop();
 }
 
-function playSeamless(){
+function findBestLoopPoints(buffer){
+
+const data =
+buffer.getChannelData(0);
+
+const sampleRate =
+buffer.sampleRate;
+
+const total =
+data.length;
+
+let bestScore =
+Infinity;
+
+let bestStart =
+sampleRate * 5;
+
+let bestEnd =
+total - (sampleRate * 5);
+
+const compareSize =
+sampleRate * 2;
+
+for(
+
+let start =
+sampleRate * 3;
+
+start <
+total * 0.4;
+
+start += 3000
+
+){
+
+for(
+
+let end =
+total * 0.6;
+
+end <
+total - compareSize;
+
+end += 3000
+
+){
+
+let diff = 0;
+
+for(
+let i=0;
+i<compareSize;
+i++
+){
+
+diff += Math.abs(
+
+data[start+i]
+-
+data[end+i]
+
+);
+}
+
+diff /= compareSize;
+
+if(diff < bestScore){
+
+bestScore = diff;
+
+bestStart = start;
+
+bestEnd = end;
+}
+}
+}
+
+return{
+
+start:
+bestStart /
+sampleRate,
+
+end:
+bestEnd /
+sampleRate
+};
+}
+
+function playSmartLoop(){
 
 stopLoop();
 
+isPlaying = true;
+
 const crossfade = 3;
 
-const duration =
-audioBuffer.duration;
+const sectionDuration =
+loopEnd - loopStart;
 
-function play(){
+const targetMinutes =
+parseInt(
+
+document.getElementById(
+'loopDuration'
+).value
+
+);
+
+const targetSeconds =
+targetMinutes * 60;
+
+let played = 0;
+
+function schedule(){
+
+if(!isPlaying) return;
+
+if(played >= targetSeconds){
+
+stopLoop();
+
+document.getElementById(
+'status'
+).innerText =
+'Loop selesai';
+
+return;
+}
 
 const now =
 audioContext.currentTime;
@@ -514,6 +715,14 @@ gain1.connect(
 audioContext.destination
 );
 
+source1.loop = false;
+
+source1.start(
+now,
+loopStart,
+sectionDuration
+);
+
 gain1.gain.setValueAtTime(
 1,
 now
@@ -521,10 +730,8 @@ now
 
 gain1.gain.linearRampToValueAtTime(
 0,
-now + duration
+now + sectionDuration
 );
-
-source1.start(now);
 
 const source2 =
 audioContext.createBufferSource();
@@ -541,59 +748,63 @@ gain2.connect(
 audioContext.destination
 );
 
+source2.start(
+now + sectionDuration - crossfade,
+loopStart,
+sectionDuration
+);
+
 gain2.gain.setValueAtTime(
 0,
-now + duration - crossfade
+now + sectionDuration - crossfade
 );
 
 gain2.gain.linearRampToValueAtTime(
 1,
-now + duration
+now + sectionDuration
 );
 
-source2.start(
-now + duration - crossfade
+currentSources.push(
+source1,
+source2
 );
 
-currentSource = source2;
+played +=
+(sectionDuration - crossfade);
 
-loopTimeout = setTimeout(
-play,
-(duration - crossfade) * 1000
+loopTimer = setTimeout(
+schedule,
+(sectionDuration - crossfade) * 1000
 );
 }
 
-play();
+schedule();
 
 document.getElementById(
 'status'
 ).innerText =
-'Loop seamless aktif';
+'Smart seamless loop aktif';
 }
 
-function downloadAudio(){
+function stopLoop(){
 
-if(!uploadedFile){
+isPlaying = false;
 
-alert(
-'Belum ada audio'
-);
+clearTimeout(loopTimer);
 
-return;
-}
+currentSources.forEach(src=>{
 
-const a =
-document.createElement('a');
+try{
+src.stop();
+}catch(e){}
+});
 
-a.href =
-URL.createObjectURL(
-uploadedFile
-);
+currentSources = [];
 
-a.download =
-'rizky-loop-audio.wav';
-
-a.click();
+document.getElementById(
+'status'
+).innerText =
+'Loop dihentikan';
 }
 
 function wait(ms){
